@@ -1,32 +1,19 @@
 package com.heisenberg;
 
-import org.apache.http.HttpRequest;
+
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 public class App
 {
@@ -56,50 +43,48 @@ public class App
         get.setHeader("Accept-Language",AcceptLanguage);
         get.setHeader("Cookie",Cookie);
 
-
-
         FileReader fr = new FileReader(new File("C:\\Users\\YinYueTai-DEV\\Desktop\\top100Url.txt"));
         BufferedReader br = new BufferedReader(fr);
+        FileWriter fw = new FileWriter(new File("C:\\Users\\YinYueTai-DEV\\Desktop\\out.txt"));
+        BufferedWriter bw = new BufferedWriter(fw);
 
         String url = null;
         HttpEntity entity = null;
-
+        int a = 1;
+        Pattern pattern = null;
+        Matcher matcher = null;
         try{
             while ( (url=br.readLine()) != null){
+                if (a > 3){
+                    break;
+                }
+                a++;
                 get.setURI(new URI(url));
                 CloseableHttpResponse response = httpClient.execute(get);
                 entity = response.getEntity();
                 String html = EntityUtils.toString(entity);
 
-                Pattern pattern = Pattern.compile(REGEX2);
-                Matcher matcher = pattern.matcher(html);
-                while (matcher.find()){
-                    System.out.println(matcher.group(2));
-                }
-
-
-
                 pattern = Pattern.compile(REGEX);
                 matcher = pattern.matcher(html);
+                String artist = null;
 
-                System.out.println(url);
+                while (matcher.find()){
+                    artist = matcher.group(2);
+                }
+                bw.write(artist+",");
+                pattern = Pattern.compile(REGEX2);
+                matcher = pattern.matcher(html);
+                while (matcher.find()){
+                    System.out.println(matcher.group(2));
+                    bw.write(matcher.group(2)+",");
+                }
+                bw.flush();
+                bw.newLine();
+
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
-
-//        try {
-//            HttpEntity entity = response.getEntity();
-//            String html = EntityUtils.toString(entity);
-//
-//            System.out.println(html);
-//
-
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
 
     }
