@@ -21,14 +21,14 @@ public class TestQuartz {
     public static void main(String[] args) throws ParseException {
         JobDetail job = JobBuilder.newJob(MyJob.class).withIdentity("job1", "group1").build();
 
-        Trigger trigger = TriggerBuilder.newTrigger().
+        /*Trigger trigger = TriggerBuilder.newTrigger().
                 withIdentity("myTRigger","group1").
                 startNow().
                 withSchedule(SimpleScheduleBuilder.simpleSchedule().
-                withIntervalInSeconds(5).repeatForever()).build();
+                withIntervalInSeconds(5).repeatForever()).build();*/
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Date date = sdf.parse("2016-07-06 17:40:20");
+        Date date = sdf.parse("2016-07-06 20:00:00");
 
         Trigger trigger1 = TriggerBuilder.newTrigger().
                             withIdentity("trigger2","group1").
@@ -36,8 +36,8 @@ public class TestQuartz {
                             withSchedule(
                                     SimpleScheduleBuilder.
                                     simpleSchedule().
-                                    withIntervalInMinutes(1).
-                                    withRepeatCount(2)
+                                    withIntervalInHours(1).
+                                    repeatForever()
                             ).build();
 
         try {
